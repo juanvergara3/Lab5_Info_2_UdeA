@@ -13,14 +13,20 @@ class Player : public QObject, public QGraphicsItem {
 private: //variables
     int posx, posy, velocity;
 
-    QTimer *sprite_timer;
-    QPixmap *pixmap;
+    std::string dir;
+
+    int score;
 
     float i, j;
     float width, height;
 
+    QTimer *sprite_timer;
+    QPixmap *pixmap;
+
 public: //variables
     QTimer *movement_timer;
+
+private: //methods
 
 public: //methods
     explicit Player(QObject *parent = nullptr);
@@ -29,6 +35,9 @@ public: //methods
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *options, QWidget *widget);
 
+    void add_score(int value);
+    int get_score();
+
     void setPosx(int value);
     void setPosy(int value);
 
@@ -36,6 +45,13 @@ public: //methods
     void move_left();
     void move_up();
     void move_down();
+
+    void bounce_right();
+    void bounce_left();
+    void bounce_up();
+    void bounce_down();
+
+    std::string getDir() const;
 
 signals:
 
