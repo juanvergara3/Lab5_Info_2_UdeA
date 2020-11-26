@@ -7,13 +7,13 @@ std::string Player::getDir() const
 
 Player::Player(QObject *parent) : QObject(parent) {
 
-    posx = 335;
-    posy = 815;
+    posx = 336;
+    posy = 816;
     this->setPos(posx, posy);
 
-    velocity = 10;
+    velocity = 8;
 
-    score = 0;
+    score = 0; //mas 23000
 
     i = 0;
     j = 0;

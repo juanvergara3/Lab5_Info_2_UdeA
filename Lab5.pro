@@ -21,6 +21,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     player.cpp \
+    teleporter.cpp \
     wall.cpp
 
 HEADERS += \
@@ -28,6 +29,7 @@ HEADERS += \
     ghost.h \
     mainwindow.h \
     player.h \
+    teleporter.h \
     wall.h
 
 FORMS += \
