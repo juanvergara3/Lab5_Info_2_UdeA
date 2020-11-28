@@ -7,6 +7,7 @@
 //#include <QGraphicsItem>
 //#include <QPixmap>
 #include <QPainter>
+#include <QThread>
 
 class Player : public QObject, public QGraphicsItem {
     Q_OBJECT
@@ -16,6 +17,8 @@ private: //variables
     std::string dir;
 
     int score;
+    int lives;
+    int sprite_max_width;
 
     float i, j;
     float width, height;
@@ -25,6 +28,7 @@ private: //variables
 
 public: //variables
     QTimer *movement_timer;
+    int death_sprite_counter;
 
 private: //methods
 
@@ -37,9 +41,12 @@ public: //methods
 
     void add_score(int value);
     int get_score();
+    int getLives() const;
 
     void setPosx(int value);
     void setPosy(int value);
+
+    void reset();
 
     void move_right();
     void move_left();
@@ -57,6 +64,8 @@ signals:
 
 public slots:
     void update_sprite();
+    void update_death_sprite();
+    void death_animation();
     void setVelocity(int value);
 
 };

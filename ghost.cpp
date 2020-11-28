@@ -1,14 +1,18 @@
 #include "ghost.h"
 
-Ghost::Ghost(QObject *parent, std::string sprite_name) : QObject(parent) {
+Ghost::Ghost(QObject *parent, std::string sprite_name, int x, int y) : QObject(parent) {
 
     sprite_timer = new QTimer();
     movement_timer = new QTimer();
+    wall_collition = new QTimer();
+
     pixmap = new QPixmap(sprite_name.c_str());
 
-    posx = 305;
-    posy = 395;
-    setPos(posx, posy);
+    posx = x;
+    posy = y;
+    Sposx = x;
+    Sposy = y;
+    setPos(Sposx, Sposy);
 
     velocity = 10;
 
@@ -21,6 +25,7 @@ Ghost::Ghost(QObject *parent, std::string sprite_name) : QObject(parent) {
 
     sprite_timer->start(150);
     movement_timer->start(60);
+    wall_collition->start();
 
 }
 Ghost::~Ghost() {
@@ -42,6 +47,13 @@ void Ghost::test_init() { //just for testing
 
     connect(movement_timer, &QTimer::timeout, this, &Ghost::move_left);
 
+}
+
+void Ghost::reset()
+{
+    posx = Sposx;
+    posy = Sposy;
+    setPos(Sposx, Sposy);
 }
 
 void Ghost::sprite_right() { //this might need some work

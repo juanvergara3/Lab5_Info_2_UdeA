@@ -14,12 +14,14 @@ class Ghost : public QObject, public QGraphicsItem {
 
 private: //variables
     int posx, posy, velocity;
+    int Sposx, Sposy;
 
     float i, j;
     float width, height;
 
     QTimer *sprite_timer;
     QTimer *movement_timer;
+    QTimer *wall_collition;
     QPixmap *pixmap;
 
 public: //varibles
@@ -27,13 +29,14 @@ public: //varibles
 private: //methods
 
 public: //methods
-    explicit Ghost(QObject *parent = nullptr, std::string sprite_name = "");
+    explicit Ghost(QObject *parent = nullptr, std::string sprite_name = "", int x = 0, int y = 0);
     ~Ghost();
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *options, QWidget *widget);
 
     void test_init();
+    void reset();
 
 signals:
 

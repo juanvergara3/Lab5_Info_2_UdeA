@@ -9,6 +9,8 @@
 #include <QDesktopWidget>
 #include <QtDebug>
 #include <QKeyEvent>
+#include <QMediaPlayer>
+#include <QMessageBox>
 #include "player.h"
 #include "ghost.h"
 #include "coin.h"
@@ -27,19 +29,26 @@ private: //variables
     QGraphicsScene *scene;
     QGraphicsScene *title_pic;
 
-    QTimer *coin_collition_timer;
-    QTimer *wall_collition_timer;
-    QTimer *teleporter_collition_timer;
+    QTimer *collitions_timer;
+//    QTimer *coin_collition_timer;
+//    QTimer *wall_collition_timer;
+//    QTimer *teleporter_collition_timer;
+    QTimer *bg_sound_timer;
 
     QList <Coin*> coins;
     QList <Wall*> walls;
     QList<Teleporter*> teleporters;
+    QList<Ghost*> ghosts;
+
+    QMediaPlayer *intro_sound;
+    QMediaPlayer *death_sound;
+    QMediaPlayer *bg_sound;
+    QMediaPlayer *win_sound;
+    QMediaPlayer *gameover_sound; //pendiente *****
 
     Player *pacman;
-    Ghost *red;
-    Ghost *pink;
-    Ghost *blue;
-    Ghost *orange;
+
+    QMessageBox *pop_up;
 
     float x,y;
     float width, height;
@@ -49,6 +58,7 @@ public: //variables
 private: //methods
     void keyPressEvent(QKeyEvent *event);
 
+    void init_coins();
     QList<Coin*> delete_coins(QList <Coin*>, int pos);
     QList<Coin *> remove_initital_coins();
 
@@ -59,5 +69,11 @@ public: //methods
     void check_coin_collition();
     void check_wall_collition();
     void check_teleporter_collition();
+
+    void check_collitions();
+
+public slots:
+    void play_bg_sound();
+
 };
 #endif // MAINWINDOW_H

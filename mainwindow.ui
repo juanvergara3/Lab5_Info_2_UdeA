@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>1030</height>
+    <height>1056</height>
    </rect>
   </property>
   <property name="palette">
@@ -1036,12 +1036,12 @@
         </font>
        </property>
       </widget>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="Score_label">
        <property name="geometry">
         <rect>
-         <x>140</x>
+         <x>150</x>
          <y>0</y>
-         <width>51</width>
+         <width>41</width>
          <height>20</height>
         </rect>
        </property>
@@ -1068,6 +1068,191 @@
        </property>
        <property name="text">
         <string>Score:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lifes_label">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>47</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>System</family>
+         <pointsize>12</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Lifes:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lives_display">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>0</y>
+         <width>47</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="palette">
+        <palette>
+         <active>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>251</red>
+             <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Text">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>255</red>
+             <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="BrightText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>243</red>
+             <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="PlaceholderText">
+           <brush brushstyle="NoBrush">
+            <color alpha="128">
+             <red>255</red>
+             <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </active>
+         <inactive>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>251</red>
+             <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Text">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>255</red>
+             <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="BrightText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>243</red>
+             <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="PlaceholderText">
+           <brush brushstyle="NoBrush">
+            <color alpha="128">
+             <red>255</red>
+             <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </inactive>
+         <disabled>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>0</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Text">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>0</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="BrightText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>243</red>
+             <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="PlaceholderText">
+           <brush brushstyle="NoBrush">
+            <color alpha="128">
+             <red>255</red>
+             <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </disabled>
+        </palette>
+       </property>
+       <property name="font">
+        <font>
+         <family>System</family>
+         <weight>75</weight>
+         <bold>true</bold>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </widget>

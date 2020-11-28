@@ -4,6 +4,7 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->score_display->display(0);
+    ui->lives_display->setText("3");
 
     title_pic = new QGraphicsScene;
     title_pic->setSceneRect(0,0,ui->title->width(),ui->title->height());
@@ -16,22 +17,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->game_screen->setScene(scene);
 
     pacman = new Player();
-    red = new Ghost(nullptr, ":/assets/sprites/red.png");
-    pink =  new Ghost(nullptr, ":/assets/sprites/pink.png");
-    blue =  new Ghost(nullptr, ":/assets/sprites/blue.png");
-    orange =  new Ghost(nullptr, ":/assets/sprites/orange.png");
+    pacman->setScale(2.5);
 
-    pacman->setScale(3);
-    red->setScale(3);
-    pink->setScale(3);
-    blue->setScale(3);
-    orange->setScale(3);
+    pop_up =  new QMessageBox;
 
-    scene->addItem(pacman);
-    scene->addItem(red);
-    scene->addItem(pink);
-    scene->addItem(blue);
-    scene->addItem(orange);
+    /*------GHOSTS------*/
+
+    ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/red.png", 310, 396));
+    ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/pink.png", 360, 396));
+    ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/blue.png", 310, 434));
+    ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/orange.png", 360, 434));
+
+    for(int k = 0; k<ghosts.size(); k++)
+         ghosts.at(k)->setScale(2.5);
 
     /*------WALLS------*/
 
@@ -97,14 +95,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     /*------COINS------*/
 
-    for(int i = 48; i < 650; i+= 32){
-        for(int j = 48; j < 830; j+= 32){ //if it collides with a wall don't add it
-            coins.push_back(new Coin(nullptr, i, j));
-            coins.back()->setScale(3);
-        }
-    }
-
-    coins = remove_initital_coins();
+    init_coins();
 
    /*------TELEPORTERS------*/
 
@@ -112,6 +103,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
    teleporters.push_back(new Teleporter(nullptr, -16,432, 672, 432, 64, 64));
 
    /*------ ADDING THEM TO THE SCENE ------*/
+
+   scene->addItem(pacman);
 
    for(int k = 0; k<walls.size(); k++)
        scene->addItem(walls.at(k));
@@ -122,48 +115,94 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
    for(int k = 0; k<teleporters.size(); k++)
         scene->addItem(teleporters.at(k));
 
+   for(int k = 0; k<ghosts.size(); k++)
+        scene->addItem(ghosts.at(k));
+
    /*------TIMERS AND CONNECTIONS------*/
 
-    coin_collition_timer = new QTimer;
-    connect(coin_collition_timer, &QTimer::timeout, this, &MainWindow::check_coin_collition);
-    coin_collition_timer->start(60);
+//    coin_collition_timer = new QTimer;
+//    connect(coin_collition_timer, &QTimer::timeout, this, &MainWindow::check_coin_collition);
+//    coin_collition_timer->start(60);
 
-    wall_collition_timer = new QTimer;
-    connect(wall_collition_timer, &QTimer::timeout, this, &MainWindow::check_wall_collition);
-    wall_collition_timer->start(60); //setting it to 30 removes bouncing
+//    wall_collition_timer = new QTimer;
+//    connect(wall_collition_timer, &QTimer::timeout, this, &MainWindow::check_wall_collition);
+//    wall_collition_timer->start(60);
 
-    teleporter_collition_timer = new QTimer;
-    connect(teleporter_collition_timer, &QTimer::timeout, this, &MainWindow::check_teleporter_collition);
-    teleporter_collition_timer->start(60);
+//    teleporter_collition_timer = new QTimer;
+//    connect(teleporter_collition_timer, &QTimer::timeout, this, &MainWindow::check_teleporter_collition);
+//    teleporter_collition_timer->start(60);
 
-    //commit: teleporters. closed coins on walls fixed. whatever we do with dolph
+   collitions_timer = new QTimer;
+   connect(collitions_timer, &QTimer::timeout, this, &MainWindow::check_collitions);
+   collitions_timer->start(60);
+
+   bg_sound_timer = new QTimer;
+
+    /*------SOUND------*/
+
+    intro_sound = new QMediaPlayer;
+    intro_sound->setMedia(QUrl("qrc:/assets/sound/intro.mp3"));
+    intro_sound->setVolume(15);
+    intro_sound->play();
+
+    bg_sound = new QMediaPlayer;
+    bg_sound->setMedia(QUrl("qrc:/assets/sound/waka.mp3"));
+    bg_sound->setVolume(15);
+
+    death_sound = new QMediaPlayer;
+    death_sound->setMedia(QUrl("qrc:/assets/sound/death.mp3"));
+    death_sound->setVolume(15);
+
+    win_sound =  new QMediaPlayer;
+    win_sound->setMedia(QUrl("qrc:/assets/sound/win.mp3"));
+    win_sound->setVolume(15);
+
+    gameover_sound = new QMediaPlayer;
+    gameover_sound->setMedia(QUrl("qrc:/assets/sound/gameover.mp3"));
+    gameover_sound->setVolume(15);
 
 }
 MainWindow::~MainWindow() {
     delete pacman;
-    delete red;
-    delete pink;
-    delete blue;
-    delete orange;
     delete scene;
     delete title_pic;
-    delete coin_collition_timer;
-    delete  wall_collition_timer;
-    delete  teleporter_collition_timer;
+
+//    delete coin_collition_timer;
+//    delete  wall_collition_timer;
+//    delete  teleporter_collition_timer;
+
+    delete collitions_timer;
+    delete pop_up;
+
+    delete bg_sound_timer;
+    delete bg_sound;
+    delete death_sound;
+    delete intro_sound;
     delete ui;
 }
 
-void MainWindow::check_coin_collition(){
-   for(int k = 0; k < coins.size(); k++){
+/*(void MainWindow::check_coin_collition(){
+    if(pacman->get_score() < 23000){
 
-       if(pacman->collidesWithItem(coins.at(k))){
+        for(int k = 0; k < coins.size(); k++){
 
-           scene->removeItem(coins.at(k));
-           coins = delete_coins(coins, k);
-           pacman->add_score(100);
-           ui->score_display->display(pacman->get_score());
-       }
-   }
+            if(pacman->collidesWithItem(coins.at(k))){
+
+                scene->removeItem(coins.at(k));
+                coins = delete_coins(coins, k);
+                pacman->add_score(100);
+                ui->score_display->display(pacman->get_score());
+            }
+        }
+    }
+
+    else if(pacman->get_score() == 23000){
+
+
+        //win screen
+
+
+    }
 }
 void MainWindow::check_wall_collition() {
     for(int k = 0; k < walls.size(); k++){
@@ -195,17 +234,197 @@ void MainWindow::check_teleporter_collition() {
 
         }
     }
+    for(int k = 0; k<ghosts.size(); k++){ //remove this hit from here later
+
+        if(pacman->collidesWithItem(ghosts.at(k))){ //just for testing
+
+            for(int w = 0; w < ghosts.size(); w++)
+                ghosts.at(k)->back_to_cage();
+
+            disconnect(bg_sound_timer,0,0,0);
+            bg_sound->stop();
+
+            death_sound->play();
+
+            pacman->setRotation(0);
+            pacman->death_animation();
+
+            ui->lives_display->setText(QString::number(pacman->getLives()));
+
+            k = ghosts.size();
+        }
+    }
+
+}*/
+
+void MainWindow::check_collitions() {
+    /*------COINS------*/
+    if(pacman->get_score() < 23000){
+
+        for(int k = 0; k < coins.size(); k++){
+
+            if(pacman->collidesWithItem(coins.at(k))){
+
+                scene->removeItem(coins.at(k));
+                coins = delete_coins(coins, k);
+                pacman->add_score(100);
+                ui->score_display->display(pacman->get_score());
+            }
+        }
+    }
+     if(pacman->get_score() == 23000){ //place holder ***else if == 23000***
+
+        win_sound->play(); //stop when you click the button
+
+        disconnect(collitions_timer,0,0,0);
+        collitions_timer->stop();
+
+        disconnect(bg_sound_timer,0,0,0);
+        bg_sound_timer->stop();
+        bg_sound->stop();
+
+        pacman->reset();
+        for(int w = 0; w < ghosts.size(); w++)
+            ghosts.at(w)->reset();
+
+        for(int k = 0; k<coins.size(); k++)
+            scene->removeItem(coins.at(k));
+        init_coins();
+        for(int k = 0; k<coins.size(); k++)
+             scene->addItem(coins.at(k));
+
+        ui->lives_display->setText(QString::number(pacman->getLives()));
+        ui->score_display->display(pacman->get_score());
+
+        connect(collitions_timer, &QTimer::timeout, this, &MainWindow::check_collitions);
+        collitions_timer->start(60);
+
+        //pop up
+        pop_up->setIconPixmap(QPixmap(":/assets/sprites/icon.png"));
+        pop_up->setBackgroundRole(QPalette::ColorRole::Window); //how does this fucking work fuuuuck
+        pop_up->setFont(QFont("System"));
+        pop_up->setForegroundRole(QPalette::ColorRole::WindowText);
+        pop_up->setText("You Won!");
+        pop_up->setInformativeText("Thanks for playing!");
+        pop_up->setButtonText(0, "Play Again?");
+        //pop_up->information(this, QString(""), QString(""));
+        pop_up->exec();
+
+    }
+
+    /*------WALLS------*/
+    for(int k = 0; k < walls.size(); k++){
+
+        if(pacman->collidesWithItem(walls.at(k), Qt::IntersectsItemBoundingRect)){
+
+            disconnect(pacman->movement_timer,0,0,0);
+
+            if(pacman->getDir() == "Right")
+                pacman->bounce_left();
+            else if (pacman->getDir() == "Left")
+                pacman->bounce_right();
+            else if (pacman->getDir() == "Up")
+                pacman->bounce_down();
+            else if (pacman->getDir() == "Down")
+                pacman->bounce_up();
+
+        }
+    }
+
+    /*------TELEPORTERS------*/
+    for(int k = 0; k < teleporters.size(); k++){
+
+        if(pacman->collidesWithItem(teleporters.at(k), Qt::ContainsItemBoundingRect)){
+
+            pacman->setPosx(teleporters.at(k)->getDesx());
+            pacman->setPosy(teleporters.at(k)->getDesy());
+            pacman->setPos(teleporters.at(k)->getDesx(), teleporters.at(k)->getDesy());
+
+        }
+    }
+
+    /*------GHOSTS------*/
+    if(pacman->getLives() > 0){
+
+        for(int k = 0; k<ghosts.size(); k++){
+
+            if(pacman->collidesWithItem(ghosts.at(k))){
+
+                for(int w = 0; w < ghosts.size(); w++)
+                    ghosts.at(w)->reset();
+
+                disconnect(bg_sound_timer,0,0,0);
+                bg_sound->stop();
+
+                death_sound->play();
+
+                pacman->setRotation(0);
+                pacman->death_animation();
+
+                ui->lives_display->setText(QString::number(pacman->getLives()));
+
+                k = ghosts.size();
+            }
+        }
+    }
+    else if(pacman->getLives() == 0){ // no lives left
+
+        gameover_sound->play(); //stop when you click the button *********
+
+        //pop up
+
+        disconnect(collitions_timer,0,0,0);
+        collitions_timer->stop();
+
+        disconnect(bg_sound_timer,0,0,0);
+        bg_sound_timer->stop();
+        bg_sound->stop();
+
+        pacman->reset();
+        for(int w = 0; w < ghosts.size(); w++)
+            ghosts.at(w)->reset();
+
+        for(int k = 0; k<coins.size(); k++)
+            scene->removeItem(coins.at(k));
+        init_coins();
+        for(int k = 0; k<coins.size(); k++)
+             scene->addItem(coins.at(k));
+
+        ui->lives_display->setText(QString::number(pacman->getLives()));
+        ui->score_display->display(pacman->get_score());
+
+        connect(collitions_timer, &QTimer::timeout, this, &MainWindow::check_collitions);
+        collitions_timer->start(60);
+    }
 }
 
+void MainWindow::play_bg_sound() {
+    if(bg_sound->PlayingState == QMediaPlayer::PlayingState)
+        bg_sound->play();
+}
+
+void MainWindow::init_coins() {
+
+    coins.clear();
+
+    for(int i = 48; i < 650; i+= 32){
+        for(int j = 48; j < 830; j+= 32){ //if it collides with a wall don't add it
+            coins.push_back(new Coin(nullptr, i, j));
+            coins.back()->setScale(3);
+        }
+    }
+
+    coins = remove_initital_coins();
+}
 QList<Coin *> MainWindow::delete_coins(QList<Coin *> list, int pos) {
 
     QList<Coin*> aux;
 
-    for(int k = 0; k < list.size(); k++)
-        if(k != pos)
-            aux.push_back(list.at(k));
+        for(int k = 0; k < list.size(); k++)
+            if(k != pos)
+                aux.push_back(list.at(k));
 
-    return aux;
+   return aux;
 }
 QList<Coin *> MainWindow::remove_initital_coins() {
 
@@ -230,7 +449,12 @@ QList<Coin *> MainWindow::remove_initital_coins() {
     return aux;
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event){
+void MainWindow::keyPressEvent(QKeyEvent *event){ //timer issues
+
+    //bg_sound_timer->start(bg_sound->duration());
+    connect(bg_sound_timer, &QTimer::timeout, this, &MainWindow::play_bg_sound);
+    bg_sound_timer->start(50);
+    //bg_sound->play();
 
     if(event->key() == Qt::Key_A || event->key() == Qt::Key_Left){
         pacman->setRotation(180);
