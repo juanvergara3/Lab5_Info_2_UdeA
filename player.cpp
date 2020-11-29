@@ -49,7 +49,6 @@ int Player::get_score(){
 std::string Player::getDir() const {
     return dir;
 }
-
 int Player::getLives() const {
     return lives;
 }
@@ -63,7 +62,6 @@ void Player::update_sprite() {
 
     this->update(-width/2, -height/2, width, height);
 }
-
 void Player::update_death_sprite() {
 
     death_sprite_counter++;
@@ -90,7 +88,6 @@ void Player::update_death_sprite() {
         this->setPos(posx, posy);
     }
 }
-
 void Player::death_animation() {
 
     disconnect(sprite_timer,0,0,0);
@@ -117,6 +114,9 @@ void Player::setVelocity(int value) {
 void Player::setPosy(int value) {
     posy = value;
 }
+void Player::setPosx(int value) {
+    posx = value;
+}
 
 void Player::reset(){
     score = 0;
@@ -127,9 +127,6 @@ void Player::reset(){
     posx = 336;
     posy = 816;
     this->setPos(posx, posy);
-}
-void Player::setPosx(int value) {
-    posx = value;
 }
 
 void Player::move_right() {

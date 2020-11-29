@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     title_pic->setBackgroundBrush((QPixmap(":/assets/sprites/title_screen.png").scaledToWidth(ui->title->width())));
     ui->title->setScene(title_pic);
 
+    ui->checkBox->setChecked(true);
+
     scene = new QGraphicsScene;
     scene->setSceneRect(0,0, ui->game_screen->width(), ui->game_screen->height());
     scene->setBackgroundBrush(QPixmap(":/assets/sprites/map.png").scaledToWidth(ui->game_screen->width()));
@@ -284,6 +286,7 @@ void MainWindow::check_collitions() {
         bg_sound->stop();
 
         pacman->reset();
+        pacman->setRotation(0);
         for(int w = 0; w < ghosts.size(); w++)
             ghosts.at(w)->reset();
 
@@ -307,7 +310,6 @@ void MainWindow::check_collitions() {
         pop_up->setText("You Won!");
         pop_up->setInformativeText("Thanks for playing!");
         pop_up->setButtonText(0, "Play Again?");
-        //pop_up->information(this, QString(""), QString(""));
         pop_up->exec();
 
     }
@@ -371,8 +373,6 @@ void MainWindow::check_collitions() {
 
         gameover_sound->play(); //stop when you click the button *********
 
-        //pop up
-
         disconnect(collitions_timer,0,0,0);
         collitions_timer->stop();
 
@@ -381,6 +381,7 @@ void MainWindow::check_collitions() {
         bg_sound->stop();
 
         pacman->reset();
+        pacman->setRotation(0);
         for(int w = 0; w < ghosts.size(); w++)
             ghosts.at(w)->reset();
 
@@ -395,6 +396,15 @@ void MainWindow::check_collitions() {
 
         connect(collitions_timer, &QTimer::timeout, this, &MainWindow::check_collitions);
         collitions_timer->start(60);
+    }
+    /*------WAKA SOUND------*/
+    if(ui->checkBox->isChecked()){
+        if(!bg_sound_timer->isActive())
+            bg_sound_timer->start(60);
+    }
+    else if(!ui->checkBox->isChecked()){
+        bg_sound->stop();
+        bg_sound_timer->stop();
     }
 }
 
@@ -445,7 +455,6 @@ QList<Coin *> MainWindow::remove_initital_coins() {
         count = 0;
     }
 
-
     return aux;
 }
 
@@ -453,7 +462,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){ //timer issues
 
     //bg_sound_timer->start(bg_sound->duration());
     connect(bg_sound_timer, &QTimer::timeout, this, &MainWindow::play_bg_sound);
-    bg_sound_timer->start(50);
+    //bg_sound_timer->start(300);
     //bg_sound->play();
 
     if(event->key() == Qt::Key_A || event->key() == Qt::Key_Left){
