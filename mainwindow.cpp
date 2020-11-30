@@ -274,9 +274,9 @@ void MainWindow::check_collitions() {
             }
         }
     }
-     if(pacman->get_score() == 23000){ //place holder ***else if == 23000***
+     if(pacman->get_score() == 23000){
 
-        win_sound->play(); //stop when you click the button
+        win_sound->play(); //stop when you click the button***
 
         disconnect(collitions_timer,0,0,0);
         collitions_timer->stop();
@@ -304,7 +304,7 @@ void MainWindow::check_collitions() {
 
         //pop up
         pop_up->setIconPixmap(QPixmap(":/assets/sprites/icon.png"));
-        pop_up->setBackgroundRole(QPalette::ColorRole::Window); //how does this fucking work fuuuuck
+        pop_up->setBackgroundRole(QPalette::ColorRole::Window); //how does this fucking work
         pop_up->setFont(QFont("System"));
         pop_up->setForegroundRole(QPalette::ColorRole::WindowText);
         pop_up->setText("You Won!");
@@ -418,7 +418,7 @@ void MainWindow::init_coins() {
     coins.clear();
 
     for(int i = 48; i < 650; i+= 32){
-        for(int j = 48; j < 830; j+= 32){ //if it collides with a wall don't add it
+        for(int j = 48; j < 830; j+= 32){
             coins.push_back(new Coin(nullptr, i, j));
             coins.back()->setScale(3);
         }
@@ -439,22 +439,24 @@ QList<Coin *> MainWindow::delete_coins(QList<Coin *> list, int pos) {
 QList<Coin *> MainWindow::remove_initital_coins() {
 
     QList<Coin*> aux;
-    int count  = 0;
+    int count_walls = 0, count_ghosts = 0;
 
     for(int k = 0; k < coins.size(); k++){
-        for(int w = 0; w<walls.size(); w++){
-            if(!coins.at(k)->collidesWithItem(walls.at(w))){
 
-                count++;
+        for(int w = 0; w<walls.size(); w++)
+            if(!coins.at(k)->collidesWithItem(walls.at(w)))
+                count_walls++;
 
-            }
-        }
+        for(int w = 0; w<ghosts.size(); w++)
+            if(!coins.at(k)->collidesWithItem(ghosts.at(w)))
+                count_ghosts++;
 
-        if(count == walls.size() && !coins.at(k)->collidesWithItem(pacman))
+        if(count_walls == walls.size() && count_ghosts == ghosts.size() && !coins.at(k)->collidesWithItem(pacman) && k!=235)
             aux.push_back(coins.at(k));
-        count = 0;
-    }
 
+        count_walls = 0;
+        count_ghosts = 0;
+    }
     return aux;
 }
 
