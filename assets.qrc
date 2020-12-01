@@ -8,12 +8,14 @@
         <file>assets/sprites/red.png</file>
         <file>assets/sprites/title_screen.png</file>
         <file>assets/sprites/icon.png</file>
-        <file>assets/sprites/pacman.png</file>
         <file>assets/sprites/death.png</file>
         <file>assets/sound/intro.mp3</file>
         <file>assets/sound/waka.mp3</file>
         <file>assets/sound/win.mp3</file>
         <file>assets/sound/death.mp3</file>
         <file>assets/sound/gameover.mp3</file>
+        <file>assets/sprites/win_icon.png</file>
+        <file>assets/sprites/gameover_icon.png</file>
+        <file>assets/sprites/pacman.png</file>
     </qresource>
 </RCC>

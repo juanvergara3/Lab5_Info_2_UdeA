@@ -19,9 +19,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->game_screen->setScene(scene);
 
     pacman = new Player();
-    pacman->setScale(2.5);
-
-    pop_up =  new QMessageBox;
+    pacman->setScale(2.5); 
 
     /*------GHOSTS------*/
 
@@ -34,6 +32,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
          ghosts.at(k)->setScale(2.5);
 
     /*------WALLS------*/
+
+    //*************** read them text file ***************
+
+    /*for(...){
+
+        x = file whatever
+        ...
+        walls.push_back(new Wall(nullptr, x, y, w, h));
+
+    }*/
 
     walls.push_back(new Wall(nullptr, 336, 16, 656, 16)); //top wall
     walls.push_back(new Wall(nullptr, 336, 86, 16, 124));
@@ -174,8 +182,6 @@ MainWindow::~MainWindow() {
 //    delete  teleporter_collition_timer;
 
     delete collitions_timer;
-    delete pop_up;
-
     delete bg_sound_timer;
     delete bg_sound;
     delete death_sound;
@@ -276,7 +282,7 @@ void MainWindow::check_collitions() {
     }
      if(pacman->get_score() == 23000){
 
-        win_sound->play(); //stop when you click the button***
+        win_sound->play();
 
         disconnect(collitions_timer,0,0,0);
         collitions_timer->stop();
@@ -303,15 +309,29 @@ void MainWindow::check_collitions() {
         collitions_timer->start(60);
 
         //pop up
-        pop_up->setIconPixmap(QPixmap(":/assets/sprites/icon.png"));
-        pop_up->setBackgroundRole(QPalette::ColorRole::Window); //how does this fucking work
-        pop_up->setFont(QFont("System"));
-        pop_up->setForegroundRole(QPalette::ColorRole::WindowText);
-        pop_up->setText("You Won!");
-        pop_up->setInformativeText("Thanks for playing!");
-        pop_up->setButtonText(0, "Play Again?");
-        pop_up->exec();
+        QMessageBox *pop_up =  new QMessageBox(QMessageBox::Information, "You Won!", "This is QMessageBox with Different Background Color");
+        pop_up->setGeometry(194, 113, 858, 459);
 
+        pop_up->setIconPixmap(QPixmap(":/assets/sprites/win_icon.png"));
+
+        pop_up->setFont(QFont("System"));
+        pop_up->setText("Thanks for playing!");
+        pop_up->setInformativeText("Play Again?");
+
+        pop_up->setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        pop_up->setButtonText(QMessageBox::Ok, "Yes");
+        pop_up->setButtonText(QMessageBox::Cancel, "No");
+
+        int *res =  new int;
+        *res = pop_up->exec();
+
+        if(*res == QMessageBox::Ok)
+            win_sound->stop();
+        else if (*res == QMessageBox::Cancel)
+            this->close();
+
+        delete res;
+        delete pop_up;
     }
 
     /*------WALLS------*/
@@ -371,7 +391,7 @@ void MainWindow::check_collitions() {
     }
     else if(pacman->getLives() == 0){ // no lives left
 
-        gameover_sound->play(); //stop when you click the button *********
+        gameover_sound->play();
 
         disconnect(collitions_timer,0,0,0);
         collitions_timer->stop();
@@ -396,7 +416,34 @@ void MainWindow::check_collitions() {
 
         connect(collitions_timer, &QTimer::timeout, this, &MainWindow::check_collitions);
         collitions_timer->start(60);
+
+        //pop up
+        QMessageBox *pop_up =  new QMessageBox(QMessageBox::Information, "GameOver :(", "This is QMessageBox with Different Background Color");
+        pop_up->setGeometry(194, 113, 858, 459);
+
+        pop_up->setIconPixmap(QPixmap(":/assets/sprites/gameover_icon.png"));
+
+        pop_up->setFont(QFont("System"));
+        pop_up->setText("Better luck next time!");
+        pop_up->setInformativeText("Play Again?");
+
+        pop_up->setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        pop_up->setButtonText(QMessageBox::Ok, "Yes");
+        pop_up->setButtonText(QMessageBox::Cancel, "No");
+
+
+        int *res =  new int;
+        *res = pop_up->exec();
+
+        if(*res == QMessageBox::Ok)
+            gameover_sound->stop();
+        else if (*res == QMessageBox::Cancel)
+            this->close();
+
+        delete res;
+        delete pop_up;
     }
+
     /*------WAKA SOUND------*/
     if(ui->checkBox->isChecked()){
         if(!bg_sound_timer->isActive())

@@ -48,8 +48,6 @@ private: //variables
 
     Player *pacman;
 
-    QMessageBox *pop_up;
-
     float x,y;
     float width, height;
 
