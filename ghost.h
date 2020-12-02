@@ -5,8 +5,6 @@
 #include <QObject>
 #include <QGraphicsPixmapItem>
 #include <QTimer>
-//#include <QGraphicsItem>
-//#include <QPixmap>
 #include <QPainter>
 
 class Ghost : public QObject, public QGraphicsItem {
@@ -16,12 +14,15 @@ private: //variables
     int posx, posy, velocity;
     int Sposx, Sposy;
 
+    std::string x_dir;
+    std::string y_dir;
+
+    bool state;
+
     float i, j;
     float width, height;
 
     QTimer *sprite_timer;
-    QTimer *movement_timer;
-    QTimer *wall_collition;
     QPixmap *pixmap;
 
 public: //varibles
@@ -35,12 +36,20 @@ public: //methods
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *options, QWidget *widget);
 
-    void test_init();
+    int getPosx() const;
+    int getPosy() const;
+
+    std::string getX_dir() const;
+    std::string getY_dir() const;
+
     void reset();
+    bool getState() const;
 
 signals:
 
 public slots:
+    void init();
+
     void sprite_right();
     void sprite_left();
     void sprite_up();
@@ -53,6 +62,11 @@ public slots:
     void move_left();
     void move_up();
     void move_down();
+
+    void bounce_right();
+    void bounce_left();
+    void bounce_up();
+    void bounce_down();
 
 };
 

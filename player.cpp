@@ -6,6 +6,8 @@ Player::Player(QObject *parent) : QObject(parent) {
     posy = 816;
     this->setPos(posx, posy);
 
+    dir = "NA";
+
     velocity = 8;
     death_sprite_counter = 0;
 
@@ -90,6 +92,8 @@ void Player::update_death_sprite() {
 }
 void Player::death_animation() {
 
+    dir =  "NA";
+
     disconnect(sprite_timer,0,0,0);
     disconnect(movement_timer,0,0,0);
 
@@ -107,18 +111,21 @@ void Player::death_animation() {
 
 }
 
-void Player::setVelocity(int value) {
-    velocity = value;
-}
-
 void Player::setPosy(int value) {
     posy = value;
 }
 void Player::setPosx(int value) {
     posx = value;
 }
+int Player::getPosx() const {
+    return posx;
+}
+int Player::getPosy() const {
+    return posy;
+}
 
 void Player::reset(){
+    dir = "NA";
     score = 0;
     lives = 3;
 
@@ -126,6 +133,7 @@ void Player::reset(){
 
     posx = 336;
     posy = 816;
+
     this->setPos(posx, posy);
 }
 

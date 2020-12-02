@@ -3,9 +3,6 @@
 Ghost::Ghost(QObject *parent, std::string sprite_name, int x, int y) : QObject(parent) {
 
     sprite_timer = new QTimer();
-    movement_timer = new QTimer();
-    wall_collition = new QTimer();
-
     pixmap = new QPixmap(sprite_name.c_str());
 
     posx = x;
@@ -14,9 +11,13 @@ Ghost::Ghost(QObject *parent, std::string sprite_name, int x, int y) : QObject(p
     Sposy = y;
     setPos(Sposx, Sposy);
 
-    velocity = 10;
+    x_dir = "NA";
+    y_dir = "NA";
 
-    //dimensiones del sprite
+    state = false;
+
+    velocity = 4;
+
     width = 14;
     height = 13;
 
@@ -24,14 +25,10 @@ Ghost::Ghost(QObject *parent, std::string sprite_name, int x, int y) : QObject(p
     j = 0;
 
     sprite_timer->start(150);
-    movement_timer->start(60);
-    wall_collition->start();
-
 }
 Ghost::~Ghost() {
     delete pixmap;
     delete sprite_timer;
-    delete movement_timer;
 }
 
 QRectF Ghost::boundingRect() const {
@@ -43,20 +40,44 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *options, QW
     painter->drawPixmap(-width/2, -height/2, *pixmap, i, j, width, height);
 }
 
-void Ghost::test_init() { //just for testing
-
-    connect(movement_timer, &QTimer::timeout, this, &Ghost::move_left);
-
+int Ghost::getPosx() const {
+    return posx;
+}
+int Ghost::getPosy() const {
+    return posy;
 }
 
-void Ghost::reset()
-{
+std::string Ghost::getX_dir() const {
+    return x_dir;
+}
+std::string Ghost::getY_dir() const {
+    return y_dir;
+}
+
+bool Ghost::getState() const {
+    return state;
+}
+
+void Ghost::init() {
+    state = true;
+
+    posx = 336;
+    posy = 816;
+    setPos(336, 816);
+}
+
+void Ghost::reset() {
+    x_dir = "NA";
+    y_dir = "NA";
+
+    state = false;
+
     posx = Sposx;
     posy = Sposy;
     setPos(Sposx, Sposy);
 }
 
-void Ghost::sprite_right() { //this might need some work
+void Ghost::sprite_right() {
 
     if(i < 0 || i > 28)
         i = 0;
@@ -113,34 +134,55 @@ void Ghost::setPosy(int value) {
 }
 
 void Ghost::move_right() {
+    x_dir = "Right";
 
     disconnect(sprite_timer,0,0,0);
     connect(sprite_timer, &QTimer::timeout, this, &Ghost::sprite_right);
 
     posx += velocity;
-    setPos(posx, posy);
+    //setPos(posx, posy);
 }
 void Ghost::move_left() {
+    x_dir = "Left";
 
     disconnect(sprite_timer,0,0,0);
     connect(sprite_timer, &QTimer::timeout, this, &Ghost::sprite_left);
 
     posx -= velocity;
-    setPos(posx, posy);
+    //setPos(posx, posy);
 }
 void Ghost::move_up() {
+    y_dir = "Up";
 
     disconnect(sprite_timer,0,0,0);
     connect(sprite_timer, &QTimer::timeout, this, &Ghost::sprite_up);
 
     posy -= velocity;
-    setPos(posx, posy);
+    //setPos(posx, posy);
 }
 void Ghost::move_down() {
+    y_dir = "Down";
 
     disconnect(sprite_timer,0,0,0);
     connect(sprite_timer, &QTimer::timeout, this, &Ghost::sprite_down);
 
     posy += velocity;
-    setPos(posx, posy);
+    //setPos(posx, posy);
+}
+
+void Ghost::bounce_right() {
+    posx += velocity;
+    //setPos(posx, posy);
+}
+void Ghost::bounce_left() {
+    posx -= velocity;
+    //setPos(posx, posy);
+}
+void Ghost::bounce_up() {
+    posy -= velocity;
+    //setPos(posx, posy);
+}
+void Ghost::bounce_down() {
+    posy += velocity;
+    //setPos(posx, posy);
 }

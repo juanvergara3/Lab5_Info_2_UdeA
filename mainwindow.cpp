@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     pacman = new Player();
     pacman->setScale(2.5); 
 
+    init = false;
+
     /*------GHOSTS------*/
 
     ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/red.png", 310, 396));
@@ -130,23 +132,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
    /*------TIMERS AND CONNECTIONS------*/
 
-//    coin_collition_timer = new QTimer;
-//    connect(coin_collition_timer, &QTimer::timeout, this, &MainWindow::check_coin_collition);
-//    coin_collition_timer->start(60);
-
-//    wall_collition_timer = new QTimer;
-//    connect(wall_collition_timer, &QTimer::timeout, this, &MainWindow::check_wall_collition);
-//    wall_collition_timer->start(60);
-
-//    teleporter_collition_timer = new QTimer;
-//    connect(teleporter_collition_timer, &QTimer::timeout, this, &MainWindow::check_teleporter_collition);
-//    teleporter_collition_timer->start(60);
-
    collitions_timer = new QTimer;
    connect(collitions_timer, &QTimer::timeout, this, &MainWindow::check_collitions);
    collitions_timer->start(60);
 
    bg_sound_timer = new QTimer;
+
+   init_timer = new QTimer;
 
     /*------SOUND------*/
 
@@ -176,94 +168,14 @@ MainWindow::~MainWindow() {
     delete pacman;
     delete scene;
     delete title_pic;
-
-//    delete coin_collition_timer;
-//    delete  wall_collition_timer;
-//    delete  teleporter_collition_timer;
-
     delete collitions_timer;
+    delete init_timer;
     delete bg_sound_timer;
     delete bg_sound;
     delete death_sound;
     delete intro_sound;
     delete ui;
 }
-
-/*(void MainWindow::check_coin_collition(){
-    if(pacman->get_score() < 23000){
-
-        for(int k = 0; k < coins.size(); k++){
-
-            if(pacman->collidesWithItem(coins.at(k))){
-
-                scene->removeItem(coins.at(k));
-                coins = delete_coins(coins, k);
-                pacman->add_score(100);
-                ui->score_display->display(pacman->get_score());
-            }
-        }
-    }
-
-    else if(pacman->get_score() == 23000){
-
-
-        //win screen
-
-
-    }
-}
-void MainWindow::check_wall_collition() {
-    for(int k = 0; k < walls.size(); k++){
-
-        if(pacman->collidesWithItem(walls.at(k), Qt::IntersectsItemBoundingRect)){
-
-            disconnect(pacman->movement_timer,0,0,0);
-
-            if(pacman->getDir() == "Right")
-                pacman->bounce_left();
-            else if (pacman->getDir() == "Left")
-                pacman->bounce_right();
-            else if (pacman->getDir() == "Up")
-                pacman->bounce_down();
-            else if (pacman->getDir() == "Down")
-                pacman->bounce_up();
-
-        }
-    }
-}
-void MainWindow::check_teleporter_collition() {
-    for(int k = 0; k < teleporters.size(); k++){
-
-        if(pacman->collidesWithItem(teleporters.at(k), Qt::ContainsItemBoundingRect)){
-
-            pacman->setPosx(teleporters.at(k)->getDesx());
-            pacman->setPosy(teleporters.at(k)->getDesy());
-            pacman->setPos(teleporters.at(k)->getDesx(), teleporters.at(k)->getDesy());
-
-        }
-    }
-    for(int k = 0; k<ghosts.size(); k++){ //remove this hit from here later
-
-        if(pacman->collidesWithItem(ghosts.at(k))){ //just for testing
-
-            for(int w = 0; w < ghosts.size(); w++)
-                ghosts.at(k)->back_to_cage();
-
-            disconnect(bg_sound_timer,0,0,0);
-            bg_sound->stop();
-
-            death_sound->play();
-
-            pacman->setRotation(0);
-            pacman->death_animation();
-
-            ui->lives_display->setText(QString::number(pacman->getLives()));
-
-            k = ghosts.size();
-        }
-    }
-
-}*/
 
 void MainWindow::check_collitions() {
     /*------COINS------*/
@@ -293,12 +205,15 @@ void MainWindow::check_collitions() {
 
         pacman->reset();
         pacman->setRotation(0);
+
+        init = false;
         for(int w = 0; w < ghosts.size(); w++)
             ghosts.at(w)->reset();
 
         for(int k = 0; k<coins.size(); k++)
             scene->removeItem(coins.at(k));
         init_coins();
+
         for(int k = 0; k<coins.size(); k++)
              scene->addItem(coins.at(k));
 
@@ -309,7 +224,7 @@ void MainWindow::check_collitions() {
         collitions_timer->start(60);
 
         //pop up
-        QMessageBox *pop_up =  new QMessageBox(QMessageBox::Information, "You Won!", "This is QMessageBox with Different Background Color");
+        QMessageBox *pop_up =  new QMessageBox(QMessageBox::Information, "You Won!", " ");
         pop_up->setGeometry(194, 113, 858, 459);
 
         pop_up->setIconPixmap(QPixmap(":/assets/sprites/win_icon.png"));
@@ -345,11 +260,31 @@ void MainWindow::check_collitions() {
                 pacman->bounce_left();
             else if (pacman->getDir() == "Left")
                 pacman->bounce_right();
-            else if (pacman->getDir() == "Up")
+             if (pacman->getDir() == "Up")
                 pacman->bounce_down();
             else if (pacman->getDir() == "Down")
                 pacman->bounce_up();
 
+        }
+    }
+
+    for(int k = 0; k < walls.size(); k++){ // not  moving as intended (see intro_game.pro)
+
+       for(int w = 0; w<ghosts.size(); w++){
+
+           if(ghosts.at(w)->collidesWithItem(walls.at(k))){
+
+               if(ghosts.at(w)->getX_dir() == "Right")
+                   ghosts.at(w)->bounce_left();
+               else if (ghosts.at(w)->getX_dir() == "Left")
+                   ghosts.at(w)->bounce_right();
+               ghosts.at(w)->setPos(ghosts.at(w)->getPosx(), ghosts.at(w)->getPosy());
+               if (ghosts.at(w)->getY_dir() == "Down")
+                   ghosts.at(w)->bounce_up();
+               else if (ghosts.at(w)->getY_dir() == "Up")
+                   ghosts.at(w)->bounce_down();
+               ghosts.at(w)->setPos(ghosts.at(w)->getPosx(), ghosts.at(w)->getPosy());
+            }
         }
     }
 
@@ -372,6 +307,7 @@ void MainWindow::check_collitions() {
 
             if(pacman->collidesWithItem(ghosts.at(k))){
 
+                init = false;
                 for(int w = 0; w < ghosts.size(); w++)
                     ghosts.at(w)->reset();
 
@@ -385,11 +321,11 @@ void MainWindow::check_collitions() {
 
                 ui->lives_display->setText(QString::number(pacman->getLives()));
 
-                k = ghosts.size();
+                break;
             }
         }
     }
-    else if(pacman->getLives() == 0){ // no lives left
+    else if(pacman->getLives() == 0){
 
         gameover_sound->play();
 
@@ -402,6 +338,8 @@ void MainWindow::check_collitions() {
 
         pacman->reset();
         pacman->setRotation(0);
+
+        init = false;
         for(int w = 0; w < ghosts.size(); w++)
             ghosts.at(w)->reset();
 
@@ -418,7 +356,7 @@ void MainWindow::check_collitions() {
         collitions_timer->start(60);
 
         //pop up
-        QMessageBox *pop_up =  new QMessageBox(QMessageBox::Information, "GameOver :(", "This is QMessageBox with Different Background Color");
+        QMessageBox *pop_up =  new QMessageBox(QMessageBox::Information, "GameOver :(", " ");
         pop_up->setGeometry(194, 113, 858, 459);
 
         pop_up->setIconPixmap(QPixmap(":/assets/sprites/gameover_icon.png"));
@@ -431,7 +369,6 @@ void MainWindow::check_collitions() {
         pop_up->setButtonText(QMessageBox::Ok, "Yes");
         pop_up->setButtonText(QMessageBox::Cancel, "No");
 
-
         int *res =  new int;
         *res = pop_up->exec();
 
@@ -443,6 +380,8 @@ void MainWindow::check_collitions() {
         delete res;
         delete pop_up;
     }
+    if(pacman->getDir() != "NA")
+        move_enemies();
 
     /*------WAKA SOUND------*/
     if(ui->checkBox->isChecked()){
@@ -507,12 +446,15 @@ QList<Coin *> MainWindow::remove_initital_coins() {
     return aux;
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event){ //timer issues
+void MainWindow::keyPressEvent(QKeyEvent *event){
 
-    //bg_sound_timer->start(bg_sound->duration());
+    if(!init){ // not working. connecting multiple singleshots to a single timer makes it now work propperly
+        for(int k = 0, time = 5000; k<ghosts.size(); k++, time += 5000)
+            init_timer->singleShot(time, ghosts.at(k), SLOT(init()));
+        init = true;
+    }
+
     connect(bg_sound_timer, &QTimer::timeout, this, &MainWindow::play_bg_sound);
-    //bg_sound_timer->start(300);
-    //bg_sound->play();
 
     if(event->key() == Qt::Key_A || event->key() == Qt::Key_Left){
         pacman->setRotation(180);
@@ -539,3 +481,35 @@ void MainWindow::keyPressEvent(QKeyEvent *event){ //timer issues
         pacman->connect(pacman->movement_timer, &QTimer::timeout, pacman, &Player::move_down);
     }
 }
+
+void MainWindow::move_enemies() {
+
+    for(int k = 0; k<ghosts.size(); k++){
+
+        if(ghosts.at(k)->getState()){
+
+            if(ghosts.at(k)->getPosx() < pacman->getPosx()){
+                ghosts.at(k)->move_right();
+
+            }
+            else if(ghosts.at(k)->getPosx() > pacman->getPosx()){
+                ghosts.at(k)->move_left();
+
+            }
+            ghosts.at(k)->setPos(ghosts.at(k)->getPosx(), ghosts.at(k)->getPosy());
+
+             if(ghosts.at(k)->getPosy() < pacman->getPosy()){
+                ghosts.at(k)->move_down();
+
+            }
+            else if(ghosts.at(k)->getPosy() > pacman->getPosy()){
+                ghosts.at(k)->move_up();
+
+            }
+
+             ghosts.at(k)->setPos(ghosts.at(k)->getPosx(), ghosts.at(k)->getPosy());
+        }
+    }
+}
+
+

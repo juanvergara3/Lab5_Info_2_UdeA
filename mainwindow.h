@@ -30,10 +30,8 @@ private: //variables
     QGraphicsScene *title_pic;
 
     QTimer *collitions_timer;
-//    QTimer *coin_collition_timer;
-//    QTimer *wall_collition_timer;
-//    QTimer *teleporter_collition_timer;
     QTimer *bg_sound_timer;
+    QTimer *init_timer;
 
     QList <Coin*> coins;
     QList <Wall*> walls;
@@ -44,9 +42,11 @@ private: //variables
     QMediaPlayer *death_sound;
     QMediaPlayer *bg_sound;
     QMediaPlayer *win_sound;
-    QMediaPlayer *gameover_sound; //pendiente *****
+    QMediaPlayer *gameover_sound;
 
     Player *pacman;
+
+    bool init;
 
     float x,y;
     float width, height;
@@ -72,6 +72,7 @@ public: //methods
 
 public slots:
     void play_bg_sound();
+    void move_enemies();
 
 };
 #endif // MAINWINDOW_H

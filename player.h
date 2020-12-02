@@ -45,6 +45,8 @@ public: //methods
 
     void setPosx(int value);
     void setPosy(int value);
+    int getPosx() const;
+    int getPosy() const;
 
     void reset();
 
@@ -66,7 +68,6 @@ public slots:
     void update_sprite();
     void update_death_sprite();
     void death_animation();
-    void setVelocity(int value);
 
 };
 
