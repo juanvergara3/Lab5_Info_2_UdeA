@@ -63,6 +63,9 @@ public slots:
     void move_up();
     void move_down();
 
+    void move_x(std::string direction);
+    void move_y(std::string direction);
+
     void bounce_right();
     void bounce_left();
     void bounce_up();

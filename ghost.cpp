@@ -140,7 +140,7 @@ void Ghost::move_right() {
     connect(sprite_timer, &QTimer::timeout, this, &Ghost::sprite_right);
 
     posx += velocity;
-    //setPos(posx, posy);
+    setPos(posx, posy);
 }
 void Ghost::move_left() {
     x_dir = "Left";
@@ -149,7 +149,7 @@ void Ghost::move_left() {
     connect(sprite_timer, &QTimer::timeout, this, &Ghost::sprite_left);
 
     posx -= velocity;
-    //setPos(posx, posy);
+    setPos(posx, posy);
 }
 void Ghost::move_up() {
     y_dir = "Up";
@@ -158,7 +158,7 @@ void Ghost::move_up() {
     connect(sprite_timer, &QTimer::timeout, this, &Ghost::sprite_up);
 
     posy -= velocity;
-    //setPos(posx, posy);
+    setPos(posx, posy);
 }
 void Ghost::move_down() {
     y_dir = "Down";
@@ -167,22 +167,46 @@ void Ghost::move_down() {
     connect(sprite_timer, &QTimer::timeout, this, &Ghost::sprite_down);
 
     posy += velocity;
-    //setPos(posx, posy);
+    setPos(posx, posy);
+}
+
+void Ghost::move_x(std::string direction) {
+    if(direction == "Right")
+        bounce_right();
+    else if (direction == "Left")
+        bounce_left();
+
+//    if(direction == "Left")
+//        bounce_right();
+//    else if (direction == "Right")
+//        bounce_left();
+}
+
+void Ghost::move_y(std::string direction) {
+    if(direction == "Up")
+        bounce_up();
+    else if (direction == "Down")
+        bounce_down();
+
+//    if(direction == "Down")
+//        bounce_up();
+//    else if (direction == "Up")
+//        bounce_down();
 }
 
 void Ghost::bounce_right() {
     posx += velocity;
-    //setPos(posx, posy);
+    setPos(posx, posy);
 }
 void Ghost::bounce_left() {
     posx -= velocity;
-    //setPos(posx, posy);
+    setPos(posx, posy);
 }
 void Ghost::bounce_up() {
     posy -= velocity;
-    //setPos(posx, posy);
+    setPos(posx, posy);
 }
 void Ghost::bounce_down() {
     posy += velocity;
-    //setPos(posx, posy);
+    setPos(posx, posy);
 }

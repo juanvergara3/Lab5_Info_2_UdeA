@@ -11,6 +11,7 @@
 #include <QKeyEvent>
 #include <QMediaPlayer>
 #include <QMessageBox>
+#include <fstream>
 #include "player.h"
 #include "ghost.h"
 #include "coin.h"
@@ -32,6 +33,7 @@ private: //variables
     QTimer *collitions_timer;
     QTimer *bg_sound_timer;
     QTimer *init_timer;
+    QTimer *enemy_movement_timer;
 
     QList <Coin*> coins;
     QList <Wall*> walls;
@@ -60,6 +62,8 @@ private: //methods
     QList<Coin*> delete_coins(QList <Coin*>, int pos);
     QList<Coin *> remove_initital_coins();
 
+    QList<Wall *> load_walls(std::string file_name);
+
 public: //methods
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -68,9 +72,8 @@ public: //methods
     void check_wall_collition();
     void check_teleporter_collition();
 
-    void check_collitions();
-
 public slots:
+    void check_collitions();
     void play_bg_sound();
     void move_enemies();
 
