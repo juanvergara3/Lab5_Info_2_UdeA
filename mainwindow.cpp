@@ -35,76 +35,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     /*------WALLS------*/
 
-    //*************** read them text file ***************
-
-    /*for(...){
-
-        x = file whatever
-        ...
-        walls.push_back(new Wall(nullptr, x, y, w, h));
-
-    }*/
-
-//    walls.push_back(new Wall(nullptr, 336, 16, 656, 16)); //top wall
-//    walls.push_back(new Wall(nullptr, 336, 86, 16, 124));
-//    walls.push_back(new Wall(nullptr, 336, 848, 656, 16)); //bottom wall
-
-//    walls.push_back(new Wall(nullptr, 16, 216, 16, 382)); //left walls
-//    walls.push_back(new Wall(nullptr, 16, 648, 16, 384));
-
-//    walls.push_back(new Wall(nullptr, 656, 216, 16, 382)); //right walls
-//    walls.push_back(new Wall(nullptr, 656, 648, 16, 384));
-
-//    walls.push_back(new Wall(nullptr, 112, 112, 82, 82)); //top squares
-//    walls.push_back(new Wall(nullptr, 240, 112, 82, 82));
-//    walls.push_back(new Wall(nullptr, 432, 112, 82, 82));
-//    walls.push_back(new Wall(nullptr, 560, 112, 82, 82));
-
-//    walls.push_back(new Wall(nullptr, 88, 352, 126, 112)); //middle left squares
-//    walls.push_back(new Wall(nullptr, 88, 512, 126, 112));
-
-//    walls.push_back(new Wall(nullptr, 584, 352, 126, 112)); //middle right squares
-//    walls.push_back(new Wall(nullptr, 584, 512, 126, 112));
-
-//    walls.push_back(new Wall(nullptr, 336, 224, 148, 48)); //top rectangles
-//    walls.push_back(new Wall(nullptr, 336, 278, 16, 58));
-//    walls.push_back(new Wall(nullptr, 112, 224, 84, 48));
-//    walls.push_back(new Wall(nullptr, 560, 224, 84, 48));
-
-//    walls.push_back(new Wall(nullptr, 336, 544, 148, 48)); //bottom rectangles
-//    walls.push_back(new Wall(nullptr, 336, 598, 16, 58));
-//    walls.push_back(new Wall(nullptr, 336, 704, 148, 48));
-//    walls.push_back(new Wall(nullptr, 336, 758, 16, 58));
-//    walls.push_back(new Wall(nullptr, 56, 704, 64, 48));
-//    walls.push_back(new Wall(nullptr, 616, 704, 64, 48));
-
-//    walls.push_back(new Wall(nullptr, 272, 416, 16, 112)); //ghost's cage
-//    walls.push_back(new Wall(nullptr, 400, 416, 16, 112));
-//    walls.push_back(new Wall(nullptr, 336, 464, 112, 16));
-//    walls.push_back(new Wall(nullptr, 294, 368, 26, 16));
-//    walls.push_back(new Wall(nullptr, 378, 368, 26, 16));
-
-//    walls.push_back(new Wall(nullptr, 206, 512, 16, 112)); //other walls
-//    walls.push_back(new Wall(nullptr, 464, 512, 16, 112));
-
-//    walls.push_back(new Wall(nullptr, 206, 304, 16, 206));
-//    walls.push_back(new Wall(nullptr, 464, 304, 16, 206));
-//    walls.push_back(new Wall(nullptr, 246, 304, 58, 16));
-//    walls.push_back(new Wall(nullptr, 424, 304, 58, 16));
-
-//    walls.push_back(new Wall(nullptr, 240, 624, 72, 16));
-//    walls.push_back(new Wall(nullptr, 432, 624, 72, 16));
-
-//    walls.push_back(new Wall(nullptr, 112, 624, 82, 16));
-//    walls.push_back(new Wall(nullptr, 560, 624, 82, 16));
-//    walls.push_back(new Wall(nullptr, 144, 678, 16, 90));
-//    walls.push_back(new Wall(nullptr, 526, 678, 16, 90));
-
-//    walls.push_back(new Wall(nullptr, 176, 784, 198, 16));
-//    walls.push_back(new Wall(nullptr, 496, 784, 198, 16));
-//    walls.push_back(new Wall(nullptr, 206, 730, 16, 92));
-//    walls.push_back(new Wall(nullptr, 466, 730, 16, 92));
-
     walls = load_walls("walls.txt");
 
     /*------COINS------*/
@@ -277,44 +207,6 @@ void MainWindow::check_collitions() {
         }
     }
 
-    for(int k = 0; k < walls.size(); k++){ // not  moving as intended (see intro_game.pro)
-
-       for(int w = 0; w<ghosts.size(); w++){
-
-           if(ghosts.at(w)->collidesWithItem(walls.at(k))){
-
-               if(ghosts.at(w)->getX_dir() == "Right"){
-
-                   ghosts.at(w)->bounce_left();
-
-
-               }
-               else if (ghosts.at(w)->getX_dir() == "Left"){
-
-                   ghosts.at(w)->bounce_right();
-
-
-
-               }
-               //ghosts.at(w)->setPos(ghosts.at(w)->getPosx(), ghosts.at(w)->getPosy());
-                if (ghosts.at(w)->getY_dir() == "Down"){
-
-                   ghosts.at(w)->bounce_up();
-
-
-               }
-               else if (ghosts.at(w)->getY_dir() == "Up"){
-
-                   ghosts.at(w)->bounce_down();
-
-               }
-               ghosts.at(w)->move_x(ghosts.at(w)->getX_dir());
-               ghosts.at(w)->move_y(ghosts.at(w)->getY_dir());
-               //ghosts.at(w)->setPos(ghosts.at(w)->getPosx(), ghosts.at(w)->getPosy());
-            }
-        }
-    }
-
     /*------TELEPORTERS------*/
     for(int k = 0; k < teleporters.size(); k++){
 
@@ -475,7 +367,7 @@ QList<Coin *> MainWindow::remove_initital_coins() {
 
 QList<Wall *> MainWindow::load_walls(std::string file_name) {
 
-    QList<Wall *> res; //walls.push_back(new Wall(nullptr, 336, 16, 656, 16));
+    QList<Wall *> res;
 
     std::fstream file (file_name, std:: fstream::in | std::fstream::binary);
 
@@ -549,36 +441,83 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 
 void MainWindow::move_enemies() {
 
-    if(pacman->getDir() != "NA"){
+    if(pacman->getDir() != "NA"){ // si pacman esta activo
 
-        for(int i = 0; i<ghosts.size(); i++){
+        //for(int k = 0; k < walls.size(); k++){ // iterar sobre walls
 
-            if(ghosts.at(i)->getState()){
+            for(int w = 0; w<ghosts.size(); w++){ //iterar sobre ghosts
 
-                if(ghosts.at(i)->getPosx() < pacman->getPosx()){
-                    ghosts.at(i)->move_right();
+                if(ghosts.at(w)->getState()){ //si el fantasma esta activo
+
+                    if(ghosts.at(w)->getPosx() < pacman->getPosx()){
+                        //if(ghosts.at(w)->collidesWithItem(walls.at(k))){
+                        //if(ghosts.at(w)->collidingItems().size() != 0){
+                               // ghosts.at(w)->bounce_left();
+                        //} else
+                            ghosts.at(w)->move_right();
+                    }
+
+                    else if(ghosts.at(w)->getPosx() > pacman->getPosx()){
+                        //if(ghosts.at(w)->collidesWithItem(walls.at(k))){
+                        //if(ghosts.at(w)->collidingItems().size() != 0){
+                                //ghosts.at(w)->bounce_right();
+                        //} else
+                            ghosts.at(w)->move_left();
+                    }
+
+
+
+                    if(ghosts.at(w)->collidingItems().size() != 0){ //don't move as intended
+                        for(int i=0; i < ghosts.at(w)->collidingItems().size(); ++i){
+                            if(typeid (*((ghosts.at(w)->collidingItems())[i])) == typeid (Wall)){
+                                if(ghosts.at(w)->getX_dir() == "Right")
+                                    ghosts.at(w)->bounce_left();
+                                else if (ghosts.at(w)->getX_dir() == "Left")
+                                    ghosts.at(w)->bounce_right();
+                            }
+                        }
+                    }
+
+                     if(ghosts.at(w)->getPosy() < pacman->getPosy()){
+                        //if(ghosts.at(w)->collidesWithItem(walls.at(k))){
+                         //if(ghosts.at(w)->collidingItems().size() != 0){
+                                //ghosts.at(w)->bounce_up();
+                        //} else
+                            ghosts.at(w)->move_down();
+                    }
+
+                    else if(ghosts.at(w)->getPosy() > pacman->getPosy()){
+                        //if(ghosts.at(w)->collidesWithItem(walls.at(k))){
+                         //if(ghosts.at(w)->collidingItems().size() != 0){
+                                //ghosts.at(w)->bounce_down();
+                        //} else
+                             ghosts.at(w)->move_up();
+                     }
+
+                     if(ghosts.at(w)->collidingItems().size() != 0){
+                         for(int i=0; i < ghosts.at(w)->collidingItems().size(); ++i){
+                             if(typeid (*((ghosts.at(w)->collidingItems())[i])) == typeid (Wall)){
+                                 if(ghosts.at(w)->getY_dir() == "Up")
+                                     ghosts.at(w)->bounce_down();
+                                 else if (ghosts.at(w)->getY_dir() == "Down")
+                                     ghosts.at(w)->bounce_up();
+                             }
+                         }
+                     }
+
+//                     if(ghosts.at(w)->collidingItems().size() != 0){ //collide with everything
+//                         if(ghosts.at(w)->getX_dir() == "Right")
+//                             ghosts.at(w)->bounce_left();
+//                         else if (ghosts.at(w)->getX_dir() == "Left")
+//                             ghosts.at(w)->bounce_right();
+//                     }
+
 
                 }
-                 if(ghosts.at(i)->getPosx() > pacman->getPosx()){
-                    ghosts.at(i)->move_left();
-
-                }
-                ghosts.at(i)->setPos(ghosts.at(i)->getPosx(), ghosts.at(i)->getPosy());
-
-                 if(ghosts.at(i)->getPosy() < pacman->getPosy()){
-                    ghosts.at(i)->move_down();
-
-                }
-                 if(ghosts.at(i)->getPosy() > pacman->getPosy()){
-                    ghosts.at(i)->move_up();
-
-
-                }
-
-                 //ghosts.at(i)->setPos(ghosts.at(i)->getPosx(), ghosts.at(i)->getPosy());
             }
-        }
     }
+    //}
 }
+
 
 
