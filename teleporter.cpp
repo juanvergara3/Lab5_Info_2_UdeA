@@ -1,8 +1,5 @@
 #include "teleporter.h"
 
-Teleporter::Teleporter(QObject *parent) : QObject(parent){
-
-}
 Teleporter::Teleporter(QObject *parent, int x, int y, int dx, int dy, int w, int h) {
     posx = x;
     posy = y;

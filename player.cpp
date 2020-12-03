@@ -11,7 +11,7 @@ Player::Player(QObject *parent) : QObject(parent) {
     velocity = 8;
     death_sprite_counter = 0;
 
-    score = 0; //max 23000
+    score = 0;
     lives = 3;
     sprite_max_width = 70;
 
@@ -108,7 +108,6 @@ void Player::death_animation() {
     sprite_timer->stop();
     sprite_timer->start(150);
     connect(sprite_timer, SIGNAL(timeout()), this, SLOT(update_death_sprite()));
-
 }
 
 void Player::setPosy(int value) {

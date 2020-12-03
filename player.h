@@ -4,8 +4,6 @@
 #include <QObject>
 #include <QGraphicsPixmapItem>
 #include <QTimer>
-//#include <QGraphicsItem>
-//#include <QPixmap>
 #include <QPainter>
 #include <QThread>
 
@@ -61,8 +59,6 @@ public: //methods
     void bounce_down();
 
     std::string getDir() const;
-
-signals:
 
 public slots:
     void update_sprite();

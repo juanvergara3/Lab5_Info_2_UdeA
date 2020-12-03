@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     pacman->setScale(2.5); 
 
     init = false;
+    init_index = 0;
 
     /*------GHOSTS------*/
 
@@ -72,10 +73,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
    init_timer = new QTimer;
 
-   enemy_movement_timer = new QTimer;
-   //connect(enemy_movement_timer, SIGNAL(timeout()), this, SLOT(move_enemies()));
-   //enemy_movement_timer->start(100);
-
     /*------SOUND------*/
 
     intro_sound = new QMediaPlayer;
@@ -89,6 +86,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     death_sound = new QMediaPlayer;
     death_sound->setMedia(QUrl("qrc:/assets/sound/death.mp3"));
+    //death_sound->setMedia(QUrl("qrc:/assets/sound/tyler1_scream_earrape.mp3"));
     death_sound->setVolume(15);
 
     win_sound =  new QMediaPlayer;
@@ -106,9 +104,6 @@ MainWindow::~MainWindow() {
     delete title_pic;
     delete collitions_timer;
     delete init_timer;
-
-    delete  enemy_movement_timer;
-
     delete bg_sound_timer;
     delete bg_sound;
     delete death_sound;
@@ -146,15 +141,27 @@ void MainWindow::check_collitions() {
         pacman->setRotation(0);
 
         init = false;
-        for(int w = 0; w < ghosts.size(); w++)
-            ghosts.at(w)->reset();
+        init_index = 0;
+        init_timer->stop();
+        disconnect(init_timer,0,0,0);
 
         for(int k = 0; k<coins.size(); k++)
             scene->removeItem(coins.at(k));
         init_coins();
-
         for(int k = 0; k<coins.size(); k++)
              scene->addItem(coins.at(k));
+
+        for(int k = 0; k<ghosts.size(); k++)
+            scene->removeItem(ghosts.at(k));
+        ghosts.clear();
+        ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/red.png", 310, 396));
+        ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/pink.png", 360, 396));
+        ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/blue.png", 310, 434));
+        ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/orange.png", 360, 434));
+        for(int k = 0; k<ghosts.size(); k++)
+             ghosts.at(k)->setScale(2.5);
+        for(int k = 0; k<ghosts.size(); k++)
+             scene->addItem(ghosts.at(k));
 
         ui->lives_display->setText(QString::number(pacman->getLives()));
         ui->score_display->display(pacman->get_score());
@@ -215,7 +222,6 @@ void MainWindow::check_collitions() {
             pacman->setPosx(teleporters.at(k)->getDesx());
             pacman->setPosy(teleporters.at(k)->getDesy());
             pacman->setPos(teleporters.at(k)->getDesx(), teleporters.at(k)->getDesy());
-
         }
     }
 
@@ -227,10 +233,15 @@ void MainWindow::check_collitions() {
             if(pacman->collidesWithItem(ghosts.at(k))){
 
                 init = false;
+                init_index = 0;
+                init_timer->stop();
+                disconnect(init_timer,0,0,0);
+
                 for(int w = 0; w < ghosts.size(); w++)
                     ghosts.at(w)->reset();
 
                 disconnect(bg_sound_timer,0,0,0);
+                bg_sound_timer->stop();
                 bg_sound->stop();
 
                 death_sound->play();
@@ -259,14 +270,27 @@ void MainWindow::check_collitions() {
         pacman->setRotation(0);
 
         init = false;
-        for(int w = 0; w < ghosts.size(); w++)
-            ghosts.at(w)->reset();
+        init_index = 0;
+        init_timer->stop();
+        disconnect(init_timer,0,0,0);
 
         for(int k = 0; k<coins.size(); k++)
             scene->removeItem(coins.at(k));
         init_coins();
         for(int k = 0; k<coins.size(); k++)
              scene->addItem(coins.at(k));
+
+        for(int k = 0; k<ghosts.size(); k++)
+            scene->removeItem(ghosts.at(k));
+        ghosts.clear();
+        ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/red.png", 310, 396));
+        ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/pink.png", 360, 396));
+        ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/blue.png", 310, 434));
+        ghosts.push_back( new Ghost(nullptr, ":/assets/sprites/orange.png", 360, 434));
+        for(int k = 0; k<ghosts.size(); k++)
+             ghosts.at(k)->setScale(2.5);
+        for(int k = 0; k<ghosts.size(); k++)
+             scene->addItem(ghosts.at(k));
 
         ui->lives_display->setText(QString::number(pacman->getLives()));
         ui->score_display->display(pacman->get_score());
@@ -405,9 +429,10 @@ QList<Wall *> MainWindow::load_walls(std::string file_name) {
 
 void MainWindow::keyPressEvent(QKeyEvent *event){
 
-    if(!init){ // not working. connecting multiple singleshots to a single timer makes it now work propperly
-        for(int k = 0, time = 5000; k<ghosts.size(); k++, time += 5000)
-            init_timer->singleShot(time, ghosts.at(k), SLOT(init()));
+    if(pacman->getDir() != "NA" && !init){
+
+        connect(init_timer, SIGNAL(timeout()), this, SLOT(init_enemies()));
+        init_timer->start(5000);
         init = true;
     }
 
@@ -441,82 +466,61 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 
 void MainWindow::move_enemies() {
 
-    if(pacman->getDir() != "NA"){ // si pacman esta activo
+    if(pacman->getDir() != "NA"){ // if pacman is active
 
-        //for(int k = 0; k < walls.size(); k++){ // iterar sobre walls
+        for(int w = 0; w<ghosts.size(); w++){
 
-            for(int w = 0; w<ghosts.size(); w++){ //iterar sobre ghosts
+            if(ghosts.at(w)->getState()){ //if the ghost is active
 
-                if(ghosts.at(w)->getState()){ //si el fantasma esta activo
+                if(ghosts.at(w)->getPosx() < pacman->getPosx()) //horizontal movement
+                    ghosts.at(w)->move_right();
 
-                    if(ghosts.at(w)->getPosx() < pacman->getPosx()){
-                        //if(ghosts.at(w)->collidesWithItem(walls.at(k))){
-                        //if(ghosts.at(w)->collidingItems().size() != 0){
-                               // ghosts.at(w)->bounce_left();
-                        //} else
-                            ghosts.at(w)->move_right();
-                    }
+                else if(ghosts.at(w)->getPosx() > pacman->getPosx()) //horizontal movement
+                    ghosts.at(w)->move_left();
 
-                    else if(ghosts.at(w)->getPosx() > pacman->getPosx()){
-                        //if(ghosts.at(w)->collidesWithItem(walls.at(k))){
-                        //if(ghosts.at(w)->collidingItems().size() != 0){
-                                //ghosts.at(w)->bounce_right();
-                        //} else
-                            ghosts.at(w)->move_left();
-                    }
-
-
-
-                    if(ghosts.at(w)->collidingItems().size() != 0){ //don't move as intended
-                        for(int i=0; i < ghosts.at(w)->collidingItems().size(); ++i){
-                            if(typeid (*((ghosts.at(w)->collidingItems())[i])) == typeid (Wall)){
-                                if(ghosts.at(w)->getX_dir() == "Right")
-                                    ghosts.at(w)->bounce_left();
-                                else if (ghosts.at(w)->getX_dir() == "Left")
-                                    ghosts.at(w)->bounce_right();
-                            }
+                if(ghosts.at(w)->collidingItems().size() != 0) //horizontal collitions
+                    for(int i=0; i < ghosts.at(w)->collidingItems().size(); ++i)
+                        if(typeid (*((ghosts.at(w)->collidingItems())[i])) == typeid (Wall) || typeid (*((ghosts.at(w)->collidingItems())[i])) == typeid (Ghost)){
+                            if(ghosts.at(w)->getX_dir() == "Right")
+                                ghosts.at(w)->bounce_left();
+                            else if (ghosts.at(w)->getX_dir() == "Left")
+                                ghosts.at(w)->bounce_right();
                         }
-                    }
 
-                     if(ghosts.at(w)->getPosy() < pacman->getPosy()){
-                        //if(ghosts.at(w)->collidesWithItem(walls.at(k))){
-                         //if(ghosts.at(w)->collidingItems().size() != 0){
-                                //ghosts.at(w)->bounce_up();
-                        //} else
-                            ghosts.at(w)->move_down();
-                    }
+                if(ghosts.at(w)->getPosy() < pacman->getPosy()) //vertical movement
+                    ghosts.at(w)->move_down();
 
-                    else if(ghosts.at(w)->getPosy() > pacman->getPosy()){
-                        //if(ghosts.at(w)->collidesWithItem(walls.at(k))){
-                         //if(ghosts.at(w)->collidingItems().size() != 0){
-                                //ghosts.at(w)->bounce_down();
-                        //} else
-                             ghosts.at(w)->move_up();
-                     }
+                else if(ghosts.at(w)->getPosy() > pacman->getPosy()) //vertical movement
+                    ghosts.at(w)->move_up();
 
-                     if(ghosts.at(w)->collidingItems().size() != 0){
-                         for(int i=0; i < ghosts.at(w)->collidingItems().size(); ++i){
-                             if(typeid (*((ghosts.at(w)->collidingItems())[i])) == typeid (Wall)){
-                                 if(ghosts.at(w)->getY_dir() == "Up")
-                                     ghosts.at(w)->bounce_down();
-                                 else if (ghosts.at(w)->getY_dir() == "Down")
-                                     ghosts.at(w)->bounce_up();
-                             }
-                         }
-                     }
-
-//                     if(ghosts.at(w)->collidingItems().size() != 0){ //collide with everything
-//                         if(ghosts.at(w)->getX_dir() == "Right")
-//                             ghosts.at(w)->bounce_left();
-//                         else if (ghosts.at(w)->getX_dir() == "Left")
-//                             ghosts.at(w)->bounce_right();
-//                     }
-
-
-                }
+                if(ghosts.at(w)->collidingItems().size() != 0) //vertical collitions
+                    for(int i=0; i < ghosts.at(w)->collidingItems().size(); ++i)
+                        if(typeid (*((ghosts.at(w)->collidingItems())[i])) == typeid (Wall) || typeid (*((ghosts.at(w)->collidingItems())[i])) == typeid (Ghost)){
+                            if(ghosts.at(w)->getY_dir() == "Up")
+                                ghosts.at(w)->bounce_down();
+                            else if (ghosts.at(w)->getY_dir() == "Down")
+                                ghosts.at(w)->bounce_up();
+                        }
             }
+        }
     }
-    //}
+}
+
+void MainWindow::init_enemies() {
+
+   if(init_index < 4){
+
+       ghosts[init_index]->init();
+       init_index++;
+
+   }
+   else if(init_index == 4){
+
+       init_index = 0;
+       init_timer->stop();
+       disconnect(init_timer,0,0,0);
+
+   }
 }
 
 

@@ -62,8 +62,8 @@ void Ghost::init() {
     state = true;
 
     posx = 336;
-    posy = 816;
-    setPos(336, 816);
+    posy = 336;
+    setPos(336, 336);
 }
 
 void Ghost::reset() {
@@ -168,30 +168,6 @@ void Ghost::move_down() {
 
     posy += velocity;
     setPos(posx, posy);
-}
-
-void Ghost::move_x(std::string direction) {
-    if(direction == "Right")
-        bounce_right();
-    else if (direction == "Left")
-        bounce_left();
-
-//    if(direction == "Left")
-//        bounce_right();
-//    else if (direction == "Right")
-//        bounce_left();
-}
-
-void Ghost::move_y(std::string direction) {
-    if(direction == "Up")
-        bounce_up();
-    else if (direction == "Down")
-        bounce_down();
-
-//    if(direction == "Down")
-//        bounce_up();
-//    else if (direction == "Up")
-//        bounce_down();
 }
 
 void Ghost::bounce_right() {

@@ -33,7 +33,6 @@ private: //variables
     QTimer *collitions_timer;
     QTimer *bg_sound_timer;
     QTimer *init_timer;
-    QTimer *enemy_movement_timer;
 
     QList <Coin*> coins;
     QList <Wall*> walls;
@@ -49,6 +48,7 @@ private: //variables
     Player *pacman;
 
     bool init;
+    int init_index;
 
     float x,y;
     float width, height;
@@ -76,6 +76,7 @@ public slots:
     void check_collitions();
     void play_bg_sound();
     void move_enemies();
+    void init_enemies();
 
 };
 #endif // MAINWINDOW_H

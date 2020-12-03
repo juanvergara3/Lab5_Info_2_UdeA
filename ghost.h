@@ -45,8 +45,6 @@ public: //methods
     void reset();
     bool getState() const;
 
-signals:
-
 public slots:
     void init();
 
@@ -62,9 +60,6 @@ public slots:
     void move_left();
     void move_up();
     void move_down();
-
-    void move_x(std::string direction);
-    void move_y(std::string direction);
 
     void bounce_right();
     void bounce_left();

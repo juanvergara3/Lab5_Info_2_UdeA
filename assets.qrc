@@ -17,5 +17,6 @@
         <file>assets/sprites/win_icon.png</file>
         <file>assets/sprites/gameover_icon.png</file>
         <file>assets/sprites/pacman.png</file>
+        <file>assets/sound/tyler1_scream_earrape.mp3</file>
     </qresource>
 </RCC>

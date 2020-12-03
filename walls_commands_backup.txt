@@ -1,58 +1,44 @@
 //    walls.push_back(new Wall(nullptr, 336, 16, 656, 16)); //top wall
 //    walls.push_back(new Wall(nullptr, 336, 86, 16, 124));
 //    walls.push_back(new Wall(nullptr, 336, 848, 656, 16)); //bottom wall
-
 //    walls.push_back(new Wall(nullptr, 16, 216, 16, 382)); //left walls
 //    walls.push_back(new Wall(nullptr, 16, 648, 16, 384));
-
 //    walls.push_back(new Wall(nullptr, 656, 216, 16, 382)); //right walls
 //    walls.push_back(new Wall(nullptr, 656, 648, 16, 384));
-
 //    walls.push_back(new Wall(nullptr, 112, 112, 82, 82)); //top squares
 //    walls.push_back(new Wall(nullptr, 240, 112, 82, 82));
 //    walls.push_back(new Wall(nullptr, 432, 112, 82, 82));
 //    walls.push_back(new Wall(nullptr, 560, 112, 82, 82));
-
 //    walls.push_back(new Wall(nullptr, 88, 352, 126, 112)); //middle left squares
 //    walls.push_back(new Wall(nullptr, 88, 512, 126, 112));
-
 //    walls.push_back(new Wall(nullptr, 584, 352, 126, 112)); //middle right squares
 //    walls.push_back(new Wall(nullptr, 584, 512, 126, 112));
-
 //    walls.push_back(new Wall(nullptr, 336, 224, 148, 48)); //top rectangles
 //    walls.push_back(new Wall(nullptr, 336, 278, 16, 58));
 //    walls.push_back(new Wall(nullptr, 112, 224, 84, 48));
 //    walls.push_back(new Wall(nullptr, 560, 224, 84, 48));
-
 //    walls.push_back(new Wall(nullptr, 336, 544, 148, 48)); //bottom rectangles
 //    walls.push_back(new Wall(nullptr, 336, 598, 16, 58));
 //    walls.push_back(new Wall(nullptr, 336, 704, 148, 48));
 //    walls.push_back(new Wall(nullptr, 336, 758, 16, 58));
 //    walls.push_back(new Wall(nullptr, 56, 704, 64, 48));
 //    walls.push_back(new Wall(nullptr, 616, 704, 64, 48));
-
 //    walls.push_back(new Wall(nullptr, 272, 416, 16, 112)); //ghost's cage
 //    walls.push_back(new Wall(nullptr, 400, 416, 16, 112));
 //    walls.push_back(new Wall(nullptr, 336, 464, 112, 16));
-//    walls.push_back(new Wall(nullptr, 294, 368, 26, 16));
-//    walls.push_back(new Wall(nullptr, 378, 368, 26, 16));
-
+//    walls.push_back(new Wall(nullptr, 336, 368, 112, 16));
 //    walls.push_back(new Wall(nullptr, 206, 512, 16, 112)); //other walls
 //    walls.push_back(new Wall(nullptr, 464, 512, 16, 112));
-
 //    walls.push_back(new Wall(nullptr, 206, 304, 16, 206));
 //    walls.push_back(new Wall(nullptr, 464, 304, 16, 206));
 //    walls.push_back(new Wall(nullptr, 246, 304, 58, 16));
 //    walls.push_back(new Wall(nullptr, 424, 304, 58, 16));
-
 //    walls.push_back(new Wall(nullptr, 240, 624, 72, 16));
 //    walls.push_back(new Wall(nullptr, 432, 624, 72, 16));
-
 //    walls.push_back(new Wall(nullptr, 112, 624, 82, 16));
 //    walls.push_back(new Wall(nullptr, 560, 624, 82, 16));
 //    walls.push_back(new Wall(nullptr, 144, 678, 16, 90));
 //    walls.push_back(new Wall(nullptr, 526, 678, 16, 90));
-
 //    walls.push_back(new Wall(nullptr, 176, 784, 198, 16));
 //    walls.push_back(new Wall(nullptr, 496, 784, 198, 16));
 //    walls.push_back(new Wall(nullptr, 206, 730, 16, 92));
